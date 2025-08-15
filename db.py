@@ -161,3 +161,49 @@ def import_products(json_file_path):
         if conn:
             conn.close()
 
+
+
+def execute_query(query, params=None):
+    """
+    Executes a SQL query and returns the result as a list of dictionaries.
+    Each dictionary represents one row, with keys matching the column names from the database.
+
+    :param query: SQL query string (e.g., "SELECT * FROM vulnerabilities WHERE vendor = %s")
+    :param params: Optional parameters to safely inject into the query (tuple, list, or dict)
+    :return: List of dictionaries (each dict is a row), or empty list if no result or error
+    """
+    conn = None
+    try:
+        conn = get_connection()
+        # Use RealDictCursor to get results as dictionaries with column names as keys
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        
+        # Execute the query with optional parameters (prevents SQL injection)
+        cur.execute(query, params)
+
+        # Check if the query returns data (e.g., SELECT), or is a command (e.g., INSERT, UPDATE)
+        if cur.description is not None:
+            rows = cur.fetchall()
+            # Convert each RealDictRow to a regular dictionary for easier handling
+            result = [dict(row) for row in rows]
+        else:
+            result = []
+
+        conn.commit()
+        cur.close()
+        
+        logger.info(f"✅ Query executed: {query.split()[0].upper()}")
+        
+        return result
+
+    except Exception as e:
+        logger.error(f"❌ Query failed: {e}")
+        
+        if conn:
+            conn.rollback()
+        
+        return []
+    
+    finally:
+        if conn:
+            conn.close()

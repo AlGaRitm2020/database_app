@@ -7,6 +7,7 @@ def show_menu():
     print("="*40)
     print("OPTTIONS:")
 
+    print("list - Get list of all products")
     print("safe - Get safe versions of product")
     print("vuln - Get all vulnerabilities of product ")
     print("load - load tables from json")
@@ -19,6 +20,16 @@ def get_save_versions_of_product(product_name):
 
 def get_all_vulns_of_product(product_name, version):
     pass
+
+def get_list_of_all_products():
+    query = "select DISTINCT product_name from products;"
+    di = execute_query(query)
+
+    print("List of all products: ")
+    for j in di:
+        print(f"- {j['product_name']}"+'\t'*2)
+
+
 
 def main():
     init_db()
@@ -39,6 +50,8 @@ def main():
             import_vulnerabilities('data/vulnerabilities.json')
             import_products('data/versions.json')
 
+        elif choice == "list":
+            get_list_of_all_products()
         elif choice == "help":
             show_menu()
         elif choice == "quit":
