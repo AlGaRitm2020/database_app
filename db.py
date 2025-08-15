@@ -37,7 +37,7 @@ def init_db():
 
         # vulnerabilities table
         cur.execute("""
-            CREATE TABLE IF NOT EXISTS vulnerabilities (
+            CREATE TABLE IF NOT EXISTS vulns(
                 version_id SERIAL PRIMARY KEY,
                 vendor VARCHAR(50),
                 product_name VARCHAR(50),
@@ -90,7 +90,7 @@ def import_vulnerabilities(json_file_path):
         # cur.execute("DELETE FROM vulnerabilities;")
 
         insert_query = """
-            INSERT INTO vulnerabilities 
+            INSERT INTO vulns 
             (vendor, product_name, kla_id, description, publish_date, start_vuln_version, fixed_version)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
