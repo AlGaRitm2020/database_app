@@ -38,7 +38,7 @@ def init_db():
         # vulnerabilities table
         cur.execute("""
             CREATE TABLE IF NOT EXISTS vulns(
-                version_id SERIAL PRIMARY KEY,
+                vuln_id SERIAL PRIMARY KEY,
                 vendor VARCHAR(50),
                 product_name VARCHAR(50),
                 kla_id VARCHAR(16),
